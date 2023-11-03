@@ -36,13 +36,14 @@ typedef struct thread_context {
 void* run(void* data) {
     int sock = ((thread_context_t*) data)->socket;
     char* buffer = (char*) malloc(BUFFER_SIZE);
+    memset(buffer, 'y', BUFFER_SIZE);
 
     int opt = 1;
     int err = setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (void*) &opt, sizeof(opt));
     if (err) goto egress;
 
     while (1) {
-        ssize_t received = recv(sock, buffer, BUFFER_SIZE, 0);
+        ssize_t received = recv(sock, buffer, BUFFER_SIZE / 4, 0);
         if (received < 0) goto egress;
 
         if (received == 0) {
@@ -50,7 +51,7 @@ void* run(void* data) {
             goto egress;
         }
 
-        ssize_t sent = send(sock, buffer, received, 0);
+        ssize_t sent = send(sock, buffer, BUFFER_SIZE, 0);
         if (sent < 0) goto egress;
     }
 

@@ -72,7 +72,7 @@ void* run_receiver(void* data) {
     size_t total_received = 0;
 
     while (1) {
-        ssize_t received = recv(sock, buffer, BUFFER_SIZE, MSG_WAITALL);
+        ssize_t received = recv(sock, buffer, BUFFER_SIZE / 4, MSG_WAITALL);
         if (received < 0) goto egress;
 
         if (received == 0) {
